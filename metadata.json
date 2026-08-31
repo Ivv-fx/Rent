@@ -1,0 +1,8 @@
+{
+  "name": "DhurvRaj Mehel Rooms",
+  "description": "Room finder app for students & landlords with price tiers, virtual 360 tours, verified landlord messaging, move-out vacancy alerts, maintenance tracking, and tenant community forums.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

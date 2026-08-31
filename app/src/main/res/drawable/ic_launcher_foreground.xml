@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Apartment Building Base & Rooftop Peak -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,26 L28,47 L34,47 L34,80 L74,80 L74,47 L80,47 Z" />
+    <!-- Doorway -->
+    <path
+        android:fillColor="#0284C7"
+        android:pathData="M48,64 L60,64 L60,80 L48,80 Z" />
+    <!-- Glowing Windows -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M38,52 L46,52 L46,60 L38,60 Z" />
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M62,52 L70,52 L70,60 L62,60 Z" />
+    <!-- Key Badge Symbol Overlay -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M72,66 C72,63.8 73.8,62 76,62 C78.2,62 80,63.8 80,66 C80,67.7 78.9,69.1 77.4,69.7 L79,77 L76,77 L76,73 L74.6,73 L74.6,70.8 C73.1,70.2 72,68.2 72,66 Z" />
+</vector>
+
