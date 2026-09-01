@@ -151,13 +151,13 @@ fun VirtualTourViewerScreen(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column  {
                         Text(
-                            text = " {listing.walkMinutesToCampus} min walk to  {listing.universityNearby}",
+                            text = "${listing.walkMinutesToCampus} min walk to ${listing.universityNearby}",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = " {listing.metroDistance} •  {listing.address}",
+                            text = "${listing.metroDistance} • ${listing.address}",
                             fontSize = 11.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

@@ -314,7 +314,7 @@ fun MoveOutAlertCard(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "Near ${alert.universityNearby} ({alert.neighborhood})",
+                    text = "Near ${alert.universityNearby} (${alert.neighborhood})",
                     fontSize = 12.sp,
                     color = ThemePrimaryDark,
                     fontWeight = FontWeight.SemiBold

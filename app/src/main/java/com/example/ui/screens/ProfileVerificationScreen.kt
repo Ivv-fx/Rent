@@ -77,6 +77,7 @@ import androidx.compose.ui.window.Dialog
 fun ProfileVerificationScreen(
     viewModel: RoomFinderViewModel,
     onNavigateToSavedRooms: () -> Unit,
+    onLogout: () -> Unit = {},
     modifier: Modifier = Modifier
 )  {
     val profile by viewModel.userProfile.collectAsStateWithLifecycle()
@@ -291,7 +292,7 @@ fun ProfileVerificationScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick =  { viewModel.logout() },
+                onClick =  { onLogout() },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant, contentColor = MaterialTheme.colorScheme.onSurface),
                 shape = RoundedCornerShape(12.dp)

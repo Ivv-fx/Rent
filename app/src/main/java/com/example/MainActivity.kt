@@ -1,5 +1,10 @@
 package com.example
 
+import androidx.compose.runtime.collectAsState
+import com.example.ui.viewmodel.AuthViewModel
+import com.example.ui.viewmodel.AuthViewModelFactory
+import com.example.data.repository.FirebaseAuthRepositoryImpl
+import com.example.data.local.SessionManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -81,19 +86,26 @@ class MainActivity : ComponentActivity()  {
         val database = AppDatabase.getInstance(applicationContext)
         val repository = RoomFinderRepository(database)
         val viewModelFactory = RoomFinderViewModelFactory(repository)
-        val viewModel: RoomFinderViewModel by viewModels  { viewModelFactory }
+        val viewModel: RoomFinderViewModel by viewModels { viewModelFactory }
+        val sessionManager = SessionManager(applicationContext)
+        val authRepository = FirebaseAuthRepositoryImpl()
+        val authViewModelFactory = AuthViewModelFactory(authRepository, sessionManager)
+        val authViewModel: AuthViewModel by viewModels { authViewModelFactory }
+
+
 
         setContent  {
             UrbanRoomTheme  {
-                MainAppNavHost(viewModel = viewModel)
+                MainAppNavHost(viewModel = viewModel, authViewModel = authViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
-    val isLoggedIn by viewModel.isLoggedIn.collectAsStateWithLifecycle()
+fun MainAppNavHost(viewModel: RoomFinderViewModel, authViewModel: AuthViewModel)  {
+    val loggedInUserId by authViewModel.isLoggedIn.collectAsState(initial = null)
+    val isLoggedIn = loggedInUserId != null
 
     Crossfade(targetState = isLoggedIn, label = "AuthCrossfade")  { loggedIn ->
         if (loggedIn)  {
@@ -286,7 +298,7 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
         }
     }
         } else  {
-            AuthScreen(viewModel = viewModel)
+            AuthScreen(viewModel = authViewModel, onAuthSuccess = { /* No-op, state triggers re-compose */ })
         }
     }
 }
