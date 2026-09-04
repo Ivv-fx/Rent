@@ -129,6 +129,17 @@ class AuthViewModel(
         }
     }
 
+    fun continueAsGuest() {
+        viewModelScope.launch {
+            sessionManager.saveSession("guest_user", "guest@urbanroom.app", "Guest Explorer")
+            _uiState.value = AuthUiState.Success("Welcome, Guest!")
+        }
+    }
+
+    fun setErrorMessage(message: String) {
+        _uiState.value = AuthUiState.Error(message)
+    }
+
     fun clearState() {
         _uiState.value = AuthUiState.Idle
     }

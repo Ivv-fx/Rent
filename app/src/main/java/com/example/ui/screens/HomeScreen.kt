@@ -383,7 +383,7 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             )  {
                 Text(
-                    text = "Available Rooms ({listings.size})",
+                    text = "Available Rooms (${listings.size})",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface

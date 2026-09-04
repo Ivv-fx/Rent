@@ -308,7 +308,7 @@ fun ListingDetailScreen(
                         if (listing.studentDiscountPercent > 0)  {
                             PriceRow(
                                 label = "Verified Student Discount",
-                                amount = "-{listing.studentDiscountPercent}% (.edu)",
+                                amount = "-${listing.studentDiscountPercent}% (.edu)",
                                 isHighlight = true
                             )
                         }

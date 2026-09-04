@@ -118,7 +118,7 @@ fun PriceTierPill(
         if (studentDiscountPercent > 0)  {
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "• studentDiscountPercent% .edu off",
+                text = "• ${studentDiscountPercent}% .edu off",
                 color = MaterialTheme.colorScheme.secondary,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold

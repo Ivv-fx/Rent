@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import kotlinx.coroutines.launch
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -232,12 +233,29 @@ fun AuthScreen(
                         HorizontalDivider(modifier = Modifier.weight(1f))
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    val coroutineScope = rememberCoroutineScope()
 
                     OutlinedButton(
                         onClick = {
-                            // Placeholder for actual Google Auth Credential retrieval
-                            viewModel.loginWithGoogle("dummy_id_token") 
+                            coroutineScope.launch {
+                                try {
+                                    val credentialManager = androidx.credentials.CredentialManager.create(context)
+                                    val googleIdOption = com.google.android.libraries.identity.googleid.GetGoogleIdOption.Builder()
+                                        .setFilterByAuthorizedAccounts(false)
+                                        .setServerClientId("578350337359-re3hdpe77bdo2i1b3m6mhqshgctllh98.apps.googleusercontent.com")
+                                        .setAutoSelectEnabled(false)
+                                        .build()
+                                    val request = androidx.credentials.GetCredentialRequest.Builder()
+                                        .addCredentialOption(googleIdOption)
+                                        .build()
+                                    val response = credentialManager.getCredential(context, request)
+                                    val googleIdTokenCredential = com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.createFrom(response.credential.data)
+                                    viewModel.loginWithGoogle(googleIdTokenCredential.idToken)
+                                } catch (e: Exception) {
+                                    viewModel.setErrorMessage("Google Sign-In: ${e.localizedMessage ?: "No account available. You can sign up with email or explore as guest."}")
+                                }
+                            }
                         },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp),
@@ -248,6 +266,15 @@ fun AuthScreen(
                         enabled = !isLoading
                     ) {
                         Text("Sign in with Google", fontWeight = FontWeight.Medium)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    TextButton(
+                        onClick = { viewModel.continueAsGuest() },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Explore as Guest / Skip Login", color = ThemePrimary, fontWeight = FontWeight.SemiBold)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
