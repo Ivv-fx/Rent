@@ -411,7 +411,7 @@ fun VirtualTourViewer(
                             modifier = Modifier.weight(1f)
                         )  {
                             Text(
-                                text = "✓ feat",
+                                text = "✓ $feat",
                                 fontSize = 10.sp,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Medium,

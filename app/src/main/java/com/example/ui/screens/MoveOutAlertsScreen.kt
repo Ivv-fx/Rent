@@ -199,7 +199,7 @@ fun MoveOutAlertsScreen(
 
             item  {
                 Text(
-                    text = "Upcoming Vacancies ({filteredAlerts.size})",
+                    text = "Upcoming Vacancies (${filteredAlerts.size})",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -377,7 +377,7 @@ fun MoveOutAlertCard(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = if (alert.isSubscribed) "Subscribed ({alert.subscribersCount})" else "Notify Me ({alert.subscribersCount})",
+                        text = if (alert.isSubscribed) "Subscribed (${alert.subscribersCount})" else "Notify Me (${alert.subscribersCount})",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold
                     )

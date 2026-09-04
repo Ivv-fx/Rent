@@ -72,7 +72,7 @@ fun RoomCard(
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
             .clickable  { onListingClick() }
-            .testTag("room_card_{listing.id}"),
+            .testTag("room_card_${listing.id}"),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     )  {
@@ -116,7 +116,7 @@ fun RoomCard(
                         onClick = onSaveToggle,
                         modifier = Modifier
                             .size(36.dp)
-                            .testTag("save_btn_{listing.id}")
+                            .testTag("save_btn_${listing.id}")
                     )  {
                         Icon(
                             imageVector = if (listing.isSaved) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -321,7 +321,7 @@ fun RoomCard(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = " ({listing.landlordReviewCount})",
+                            text = " (${listing.landlordReviewCount})",
                             fontSize = 10.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -340,7 +340,7 @@ fun RoomCard(
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp)
-                            .testTag("tour_btn_{listing.id}"),
+                            .testTag("tour_btn_${listing.id}"),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = ThemePrimary
                         ),
@@ -360,7 +360,7 @@ fun RoomCard(
                         modifier = Modifier
                             .weight(1f)
                             .height(40.dp)
-                            .testTag("view_details_btn_{listing.id}"),
+                            .testTag("view_details_btn_${listing.id}"),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = ThemePrimary
                         ),

@@ -156,7 +156,7 @@ fun CommunityForumScreen(
                         Row(verticalAlignment = Alignment.CenterVertically)  {
                             Icon(Icons.Default.Event, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Community Events ({events.size})", fontSize = 12.sp, fontWeight = if (selectedTabIndex == 1) FontWeight.Bold else FontWeight.Normal)
+                            Text("Community Events (${events.size})", fontSize = 12.sp, fontWeight = if (selectedTabIndex == 1) FontWeight.Bold else FontWeight.Normal)
                         }
                     }
                 )

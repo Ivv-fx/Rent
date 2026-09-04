@@ -51,7 +51,7 @@ fun SavedRoomsScreen(
             TopAppBar(
                 title =  {
                     Text(
-                        text = "Saved Rooms ({savedListings.size})",
+                        text = "Saved Rooms (${savedListings.size})",
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Bold
                     )

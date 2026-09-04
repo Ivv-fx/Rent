@@ -344,7 +344,7 @@ private fun MaintenanceRequestsTab(
                 verticalAlignment = Alignment.CenterVertically
             )  {
                 Text(
-                    text = "Tenant Maintenance Tickets ({tickets.size})",
+                    text = "Tenant Maintenance Tickets (${tickets.size})",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
