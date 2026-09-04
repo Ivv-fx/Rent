@@ -22,7 +22,7 @@ import com.example.data.models.PaymentRecordEntity
         ForumPostEntity::class,
         CommunityEventEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase()  {

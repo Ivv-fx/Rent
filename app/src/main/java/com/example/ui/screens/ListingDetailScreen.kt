@@ -400,7 +400,9 @@ fun ListingDetailScreen(
 
                         VerificationBadgesRow(
                             isLandlordVerified = listing.landlordVerified,
-                            isBackgroundChecked = listing.backgroundChecked
+                            isBackgroundChecked = listing.backgroundChecked,
+                            isBusinessVerified = listing.businessVerified,
+                            isOwnershipVerified = listing.ownershipVerified
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))

@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Shield
@@ -125,10 +127,15 @@ fun PriceTierPill(
     }
 }
 
+
+
+
 @Composable
 fun VerificationBadgesRow(
     isLandlordVerified: Boolean,
     isBackgroundChecked: Boolean,
+    isBusinessVerified: Boolean = false,
+    isOwnershipVerified: Boolean = false,
     modifier: Modifier = Modifier
 )  {
     Row(
@@ -178,6 +185,54 @@ fun VerificationBadgesRow(
                 Text(
                     text = "Background Checked",
                     color = ThemeSuccess,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        if (isBusinessVerified) {
+            Spacer(modifier = Modifier.width(6.dp))
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(ThemeSecondaryLight)
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            )  {
+                Icon(
+                    imageVector = Icons.Default.Business,
+                    contentDescription = "Business Verified",
+                    tint = ThemeSecondary,
+                    modifier = Modifier.size(12.dp)
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(
+                    text = "Business Verified",
+                    color = ThemeSecondary,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        if (isOwnershipVerified) {
+            Spacer(modifier = Modifier.width(6.dp))
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(ThemeSecondaryLight)
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically
+            )  {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "Ownership Verified",
+                    tint = ThemeSecondary,
+                    modifier = Modifier.size(12.dp)
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(
+                    text = "Ownership Verified",
+                    color = ThemeSecondary,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold
                 )

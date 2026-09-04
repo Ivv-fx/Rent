@@ -26,6 +26,12 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.Home
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -217,40 +223,87 @@ fun ProfileVerificationScreen(
                 modifier = Modifier.padding(top = 2.dp, bottom = 10.dp)
             )
 
+            // Basic Info Verification
+            VerificationStatusItem(
+                icon = Icons.Default.Email,
+                title = "Email Verification",
+                subtitle = "Linked to ${profile.email}",
+                isVerified = profile.isEmailVerified,
+                onClick = { viewModel.verifyEmail() }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            VerificationStatusItem(
+                icon = Icons.Default.Phone,
+                title = "Phone Verification",
+                subtitle = "SMS verification for secure communication",
+                isVerified = profile.isPhoneVerified,
+                onClick = { viewModel.verifyPhone() }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            VerificationStatusItem(
+                icon = Icons.Default.Link,
+                title = "Social Media Link",
+                subtitle = "Connect LinkedIn or Instagram (Optional)",
+                isVerified = profile.isSocialLinked,
+                onClick = { viewModel.linkSocial() }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             VerificationStatusItem(
                 icon = Icons.Default.Badge,
                 title = "Government ID Verification",
                 subtitle = "State Driver's License & Biometrics verified",
-                isVerified = profile.isIdVerified
+                isVerified = profile.isIdVerified,
+                onClick = { viewModel.verifyId() }
             )
-
             Spacer(modifier = Modifier.height(8.dp))
 
-            VerificationStatusItem(
-                icon = Icons.Default.School,
-                title = "Student Status Verification",
-                subtitle = "Enrolled at ${profile.university} (.edu active)",
-                isVerified = profile.isStudentVerified
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            VerificationStatusItem(
-                icon = Icons.Default.Security,
-                title = "Background Check Record",
-                subtitle = "Criminal record & national eviction search passed",
-                isVerified = profile.isBackgroundChecked
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            VerificationStatusItem(
-                icon = Icons.Default.CreditScore,
-                title = "Credit Score Tier ({profile.creditTier})",
-                subtitle = "Verified via TransUnion SmartMove API",
-                isVerified = true
-            )
-
+            if (!profile.isLandlordMode) {
+                VerificationStatusItem(
+                    icon = Icons.Default.School,
+                    title = "Student Status Verification",
+                    subtitle = "Enrolled at ${profile.university} (.edu active)",
+                    isVerified = profile.isStudentVerified,
+                    onClick = { viewModel.verifyStudent() }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                VerificationStatusItem(
+                    icon = Icons.Default.Security,
+                    title = "Background Check Record",
+                    subtitle = "Criminal record & national eviction search passed",
+                    isVerified = profile.isBackgroundChecked,
+                    onClick = { viewModel.verifyBackground() }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                VerificationStatusItem(
+                    icon = Icons.Default.CreditScore,
+                    title = "Credit Score Tier (${profile.creditTier})",
+                    subtitle = "Verified via TransUnion SmartMove API",
+                    isVerified = true
+                )
+            } else {
+                Text(
+                    text = "Landlord Strict Verification",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+                )
+                VerificationStatusItem(
+                    icon = Icons.Default.Business,
+                    title = "Business Registration",
+                    subtitle = "LLC or Sole Proprietorship verified",
+                    isVerified = profile.isBusinessVerified,
+                    onClick = { viewModel.verifyBusiness() }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                VerificationStatusItem(
+                    icon = Icons.Default.Home,
+                    title = "Property Ownership",
+                    subtitle = "Deed & Property Tax Records verified",
+                    isVerified = profile.isOwnershipVerified,
+                    onClick = { viewModel.verifyOwnership() }
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             // Saved Rooms Quick Tile
@@ -370,10 +423,13 @@ private fun VerificationStatusItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
     subtitle: String,
-    isVerified: Boolean
+    isVerified: Boolean,
+    onClick: (() -> Unit)? = null
 )  {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = !isVerified && onClick != null) { onClick?.invoke() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(12.dp),
         border = CardDefaults.outlinedCardBorder()
@@ -423,7 +479,7 @@ private fun VerificationStatusItem(
                     )
                     Spacer(modifier = Modifier.width(3.dp))
                     Text(
-                        text = if (isVerified) "Verified" else "Pending",
+                        text = if (isVerified) "Verified" else if (onClick != null) "Verify Now" else "Pending",
                         color = if (isVerified) ThemeSuccess else ThemeTextSecondary,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold

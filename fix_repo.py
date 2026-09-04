@@ -1,4 +1,4 @@
-package com.example.data.repository
+content = """package com.example.data.repository
 
 import android.util.Log
 import com.example.domain.model.AuthResult
@@ -100,3 +100,7 @@ class FirebaseAuthRepositoryImpl(
         return getAuth()?.currentUser
     }
 }
+"""
+
+with open("app/src/main/java/com/example/data/repository/FirebaseAuthRepositoryImpl.kt", "w") as f:
+    f.write(content)

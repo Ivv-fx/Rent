@@ -330,6 +330,15 @@ class RoomFinderViewModel(
         repository.updateUserProfile(name, email, university, creditTier)
     }
 
+    fun verifyEmail() = repository.verifyEmail()
+    fun verifyPhone() = repository.verifyPhone()
+    fun linkSocial() = repository.linkSocial()
+    fun verifyId() = repository.verifyId()
+    fun verifyStudent() = repository.verifyStudent()
+    fun verifyBackground() = repository.verifyBackground()
+    fun verifyBusiness() = repository.verifyBusiness()
+    fun verifyOwnership() = repository.verifyOwnership()
+
     fun toggleLandlordMode()  {
         repository.toggleLandlordMode()
     }

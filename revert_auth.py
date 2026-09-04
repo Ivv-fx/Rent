@@ -1,5 +1,6 @@
-package com.example.data.repository
+content = """package com.example.data.repository
 
+import android.util.Log
 import com.example.domain.model.AuthResult
 import com.example.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -9,10 +10,20 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthRepositoryImpl(
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val authProvider: () -> FirebaseAuth = { FirebaseAuth.getInstance() }
 ) : AuthRepository {
 
+    private fun getAuth(): FirebaseAuth? {
+        return try {
+            authProvider()
+        } catch (e: Exception) {
+            Log.e("FirebaseAuth", "Firebase not initialized: ${e.message}")
+            null
+        }
+    }
+
     override suspend fun login(email: String, password: String): AuthResult<FirebaseUser> {
+        val auth = getAuth() ?: return AuthResult.Error("Firebase is not initialized.")
         return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
             val user = result.user
@@ -32,6 +43,7 @@ class FirebaseAuthRepositoryImpl(
         email: String,
         password: String
     ): AuthResult<FirebaseUser> {
+        val auth = getAuth() ?: return AuthResult.Error("Firebase is not initialized.")
         return try {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
             val user = result.user
@@ -52,6 +64,7 @@ class FirebaseAuthRepositoryImpl(
     }
 
     override suspend fun loginWithGoogle(idToken: String): AuthResult<FirebaseUser> {
+        val auth = getAuth() ?: return AuthResult.Error("Firebase is not initialized.")
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(credential).await()
@@ -67,6 +80,7 @@ class FirebaseAuthRepositoryImpl(
     }
 
     override suspend fun resetPassword(email: String): AuthResult<Unit> {
+        val auth = getAuth() ?: return AuthResult.Error("Firebase is not initialized.")
         return try {
             auth.sendPasswordResetEmail(email).await()
             AuthResult.Success(Unit)
@@ -76,10 +90,14 @@ class FirebaseAuthRepositoryImpl(
     }
 
     override suspend fun logout() {
-        auth.signOut()
+        getAuth()?.signOut()
     }
 
     override fun getCurrentUser(): FirebaseUser? {
-        return auth.currentUser
+        return getAuth()?.currentUser
     }
 }
+"""
+
+with open("app/src/main/java/com/example/data/repository/FirebaseAuthRepositoryImpl.kt", "w") as f:
+    f.write(content)

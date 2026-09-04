@@ -276,6 +276,31 @@ class RoomFinderRepository(private val db: AppDatabase)  {
         )
     }
 
+    fun verifyEmail() {
+        _userProfile.value = _userProfile.value.copy(isEmailVerified = true)
+    }
+    fun verifyPhone() {
+        _userProfile.value = _userProfile.value.copy(isPhoneVerified = true)
+    }
+    fun linkSocial() {
+        _userProfile.value = _userProfile.value.copy(isSocialLinked = true)
+    }
+    fun verifyId() {
+        _userProfile.value = _userProfile.value.copy(isIdVerified = true)
+    }
+    fun verifyStudent() {
+        _userProfile.value = _userProfile.value.copy(isStudentVerified = true)
+    }
+    fun verifyBackground() {
+        _userProfile.value = _userProfile.value.copy(isBackgroundChecked = true)
+    }
+    fun verifyBusiness() {
+        _userProfile.value = _userProfile.value.copy(isBusinessVerified = true)
+    }
+    fun verifyOwnership() {
+        _userProfile.value = _userProfile.value.copy(isOwnershipVerified = true)
+    }
+
     fun toggleLandlordMode()  {
         val current = _userProfile.value
         _userProfile.value = current.copy(isLandlordMode = !current.isLandlordMode)

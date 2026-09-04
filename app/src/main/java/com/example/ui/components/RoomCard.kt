@@ -301,7 +301,9 @@ fun RoomCard(
                 )  {
                     VerificationBadgesRow(
                         isLandlordVerified = listing.landlordVerified,
-                        isBackgroundChecked = listing.backgroundChecked
+                        isBackgroundChecked = listing.backgroundChecked,
+                        isBusinessVerified = listing.businessVerified,
+                        isOwnershipVerified = listing.ownershipVerified
                     )
 
                     Row(verticalAlignment = Alignment.CenterVertically)  {

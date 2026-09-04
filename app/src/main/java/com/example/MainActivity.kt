@@ -6,6 +6,9 @@ import com.example.ui.viewmodel.AuthViewModelFactory
 import com.example.data.repository.FirebaseAuthRepositoryImpl
 import com.example.data.local.SessionManager
 import android.os.Bundle
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.FirebaseApp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -81,6 +84,15 @@ class MainActivity : ComponentActivity()  {
 
     override fun onCreate(savedInstanceState: Bundle?)  {
         super.onCreate(savedInstanceState)
+        try {
+            FirebaseApp.initializeApp(this)
+            val settings = FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build()
+            FirebaseFirestore.getInstance().firestoreSettings = settings
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         enableEdgeToEdge()
 
         val database = AppDatabase.getInstance(applicationContext)
@@ -237,6 +249,9 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel, authViewModel: AuthViewModel)
                     viewModel = viewModel,
                     onNavigateToSavedRooms =  {
                         navController.navigate("saved_rooms")
+                    },
+                    onLogout = {
+                        authViewModel.logout()
                     }
                 )
             }
