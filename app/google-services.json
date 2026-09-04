@@ -12,7 +12,20 @@
           "package_name": "com.aistudio.urbanroom.kxvq"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "578350337359-m2365dn1h96r97g9o8idi695lkj192h0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aistudio.urbanroom.kxvq",
+            "certificate_hash": "d1467488a3805fd91e16477dfb909a16423cae41"
+          }
+        },
+        {
+          "client_id": "578350337359-re3hdpe77bdo2i1b3m6mhqshgctllh98.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAGckFC1ay7NHWEnZXwE4QdVbYO1MnzbnY"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578350337359-re3hdpe77bdo2i1b3m6mhqshgctllh98.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
