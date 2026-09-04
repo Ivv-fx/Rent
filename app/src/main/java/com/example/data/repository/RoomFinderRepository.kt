@@ -15,32 +15,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class RoomFinderRepository(private val db: AppDatabase)  {
 
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
-
-    fun login(email: String, name: String? = null)  {
-        val derivedName = name ?: email.substringBefore("@")
-            .replace(".", " ")
-            .split(" ")
-            .joinToString(" ")  { it.replaceFirstChar  { char -> char.uppercase() } }
-        
-        val current = _userProfile.value
-        _userProfile.value = current.copy(
-            email = email,
-            name = derivedName
-        )
-        _isLoggedIn.value = true
-    }
-
-    fun logout()  {
-        _isLoggedIn.value = false
-    }
-
     private val _userProfile = MutableStateFlow(UserProfile())
     val userProfile = _userProfile.asStateFlow()
+
+    init {
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            com.clerk.api.Clerk.userFlow.collect { user ->
+                if (user != null) {
+                    val current = _userProfile.value
+                    val emailAddress = user.primaryEmailAddress?.emailAddress ?: ""
+                    val fullName = "${user.firstName ?: ""} ${user.lastName ?: ""}".trim().ifBlank { 
+                        emailAddress.substringBefore("@").replaceFirstChar { it.uppercase() } 
+                    }
+                    _userProfile.value = current.copy(
+                        id = user.id,
+                        email = emailAddress,
+                        name = fullName.ifBlank { "User" }
+                    )
+                }
+            }
+        }
+    }
 
     val listings: Flow<List<ListingEntity>> = db.listingDao().getAllListings()
     val savedListings: Flow<List<ListingEntity>> = db.listingDao().getSavedListings()

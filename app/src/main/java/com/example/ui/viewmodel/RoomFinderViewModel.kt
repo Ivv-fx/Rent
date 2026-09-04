@@ -31,40 +31,6 @@ class RoomFinderViewModel(
         }
     }
 
-    val isLoggedIn: StateFlow<Boolean> = repository.isLoggedIn
-
-    private val _authError = MutableStateFlow<String?>(null)
-    val authError: StateFlow<String?> = _authError.asStateFlow()
-
-    fun login(email: String, password: String)  {
-        viewModelScope.launch  {
-            _authError.value = null
-            try  {
-                val publishableKey = com.example.BuildConfig.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-                val clerkApi = com.example.data.api.ClerkAuthUtils.createClerkApi(publishableKey)
-                val request = com.example.data.api.ClerkSignInRequest(
-                    identifier = email,
-                    password = password
-                )
-                
-                val response = clerkApi.createSignIn(request = request)
-                if (response.isSuccessful) {
-                    println("Clerk API Sign-In success: ${response.code()}")
-                    repository.login(email)
-                } else {
-                    println("Clerk API Error: ${response.errorBody()?.string()}")
-                    _authError.value = "Invalid credentials. Please try again."
-                }
-            } catch (e: Exception)  {
-                println("Clerk API Exception: ${e.message}")
-                _authError.value = "Network error connecting to authentication service."
-            }
-        }
-    }
-
-    fun logout()  {
-        repository.logout()
-    }
 
     val userProfile: StateFlow<UserProfile> = repository.userProfile
 

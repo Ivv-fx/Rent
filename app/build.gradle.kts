@@ -109,12 +109,10 @@ dependencies {
   // Uncomment to use Firestore:
   implementation(libs.firebase.firestore)
 
-  // Uncomment ALL FOUR of the following dependencies together to use Firebase Auth and Google
-  // Sign-In via Credential Manager:
-  implementation(libs.firebase.auth)
-  implementation(libs.androidx.credentials)
-  implementation(libs.androidx.credentials.play.services)
-  implementation(libs.googleid)
+  // Clerk Android SDK for authentication and UI
+  implementation("com.clerk:clerk-android-ui:1.1.4")
+  
+  // (Firebase Auth dependencies removed in favor of Clerk)
   // implementation(libs.firebase.appcheck.recaptcha)
   // implementation(libs.firebase.appcheck.debug)
   implementation(libs.kotlinx.coroutines.android)

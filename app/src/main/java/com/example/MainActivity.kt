@@ -1,9 +1,8 @@
 package com.example
 
 import androidx.compose.runtime.collectAsState
-import com.example.ui.viewmodel.AuthViewModel
-import com.example.ui.viewmodel.AuthViewModelFactory
-import com.example.data.repository.FirebaseAuthRepositoryImpl
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import com.example.data.local.SessionManager
 import android.os.Bundle
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,6 +11,8 @@ import com.google.firebase.firestore.PersistentCacheSettings
 import com.google.firebase.FirebaseApp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.clerk.api.Clerk
+import com.clerk.ui.auth.AuthView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
@@ -70,7 +71,6 @@ import com.example.ui.viewmodel.RoomFinderViewModel
 import com.example.ui.viewmodel.RoomFinderViewModelFactory
 
 import androidx.compose.animation.Crossfade
-import com.example.ui.screens.AuthScreen
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector, val tag: String)  {
     object Auth : Screen("auth", "Auth", Icons.Default.Person, "nav_auth")
@@ -100,25 +100,21 @@ class MainActivity : ComponentActivity()  {
         val repository = RoomFinderRepository(database)
         val viewModelFactory = RoomFinderViewModelFactory(repository)
         val viewModel: RoomFinderViewModel by viewModels { viewModelFactory }
-        val sessionManager = SessionManager(applicationContext)
-        val authRepository = FirebaseAuthRepositoryImpl()
-        val authViewModelFactory = AuthViewModelFactory(authRepository, sessionManager)
-        val authViewModel: AuthViewModel by viewModels { authViewModelFactory }
 
 
 
         setContent  {
             UrbanRoomTheme  {
-                MainAppNavHost(viewModel = viewModel, authViewModel = authViewModel)
+                MainAppNavHost(viewModel = viewModel)
             }
         }
     }
 }
 
 @Composable
-fun MainAppNavHost(viewModel: RoomFinderViewModel, authViewModel: AuthViewModel)  {
-    val loggedInUserId by authViewModel.isLoggedIn.collectAsState(initial = null)
-    val isLoggedIn = loggedInUserId != null
+fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
+    val user by Clerk.userFlow.collectAsStateWithLifecycle(initialValue = null)
+    val isLoggedIn = user != null
 
     Crossfade(targetState = isLoggedIn, label = "AuthCrossfade")  { loggedIn ->
         if (loggedIn)  {
@@ -246,13 +242,16 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel, authViewModel: AuthViewModel)
             }
 
             composable(Screen.Profile.route)  {
+                val coroutineScope = rememberCoroutineScope()
                 ProfileVerificationScreen(
                     viewModel = viewModel,
                     onNavigateToSavedRooms =  {
                         navController.navigate("saved_rooms")
                     },
                     onLogout = {
-                        authViewModel.logout()
+                        coroutineScope.launch {
+                            Clerk.auth.signOut()
+                        }
                     }
                 )
             }
@@ -314,7 +313,9 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel, authViewModel: AuthViewModel)
         }
     }
         } else  {
-            AuthScreen(viewModel = authViewModel, onAuthSuccess = { /* No-op, state triggers re-compose */ })
+            AuthView(
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
