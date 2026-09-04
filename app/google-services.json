@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "578350337359",
+    "project_id": "rentals-5b31a",
+    "storage_bucket": "rentals-5b31a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578350337359:android:0ee35dcedf8b55b2da893a",
+        "android_client_info": {
+          "package_name": "com.aistudio.urbanroom.kxvq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGckFC1ay7NHWEnZXwE4QdVbYO1MnzbnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

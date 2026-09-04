@@ -8,6 +8,7 @@ import com.example.data.local.SessionManager
 import android.os.Bundle
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.PersistentCacheSettings
 import com.google.firebase.FirebaseApp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -87,7 +88,7 @@ class MainActivity : ComponentActivity()  {
         try {
             FirebaseApp.initializeApp(this)
             val settings = FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(true)
+                .setLocalCacheSettings(PersistentCacheSettings.newBuilder().build())
                 .build()
             FirebaseFirestore.getInstance().firestoreSettings = settings
         } catch (e: Exception) {

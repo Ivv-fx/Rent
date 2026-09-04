@@ -21,6 +21,7 @@ android {
     versionName = "1.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    manifestPlaceholders["MAPS_API_KEY"] = "AIzaSyDummyKeyForMapsBuildTesting"
   }
 
   signingConfigs {
