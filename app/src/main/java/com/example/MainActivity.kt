@@ -1,9 +1,7 @@
 package com.example
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import com.example.data.local.SessionManager
 import android.os.Bundle
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -20,8 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Apartment
-import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.NotificationsActive
@@ -45,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -65,15 +60,14 @@ import com.example.ui.screens.SavedRoomsScreen
 import com.example.ui.screens.VirtualTourViewerScreen
 import com.example.ui.theme.ThemeError
 import com.example.ui.theme.UrbanRoomTheme
-import com.example.ui.theme.ThemePrimaryDark
 import com.example.ui.theme.ThemePrimary
 import com.example.ui.viewmodel.RoomFinderViewModel
 import com.example.ui.viewmodel.RoomFinderViewModelFactory
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.material3.MaterialTheme
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector, val tag: String)  {
-    object Auth : Screen("auth", "Auth", Icons.Default.Person, "nav_auth")
     object Home : Screen("home", "Explore", Icons.Default.Search, "nav_explore")
     object MoveOutAlerts : Screen("move_out_alerts", "Alerts", Icons.Default.NotificationsActive, "nav_alerts")
     object Landlord : Screen("landlord_dashboard", "Landlord Pro", Icons.Default.Dashboard, "nav_landlord")
@@ -128,79 +122,85 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                 Screen.MoveOutAlerts,
                 Screen.Landlord,
                 Screen.Community,
-                Screen.Profile
+                Screen.Profile,
             )
 
             val showBottomBar = currentRoute in bottomNavItems.map  { it.route }
 
             Scaffold(
         modifier = Modifier.fillMaxSize(),
-        bottomBar =  {
-            AnimatedVisibility(visible = showBottomBar)  {
-                NavigationBar(
-                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-                    tonalElevation = 8.dp
-                )  {
-                    bottomNavItems.forEach  { screen ->
-                        val selected = currentRoute == screen.route
+        bottomBar = {
+            AnimatedVisibility(
+                visible = showBottomBar,
+                content = {
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 8.dp,
+                        content = {
+                            bottomNavItems.forEach { screen ->
+                                val selected = currentRoute == screen.route
 
-                        NavigationBarItem(
-                            selected = selected,
-                            onClick =  {
-                                if (currentRoute != screen.route)  {
-                                    navController.navigate(screen.route)  {
-                                        popUpTo(navController.graph.findStartDestination().id)  {
-                                            saveState = true
+                                NavigationBarItem(
+                                    selected = selected,
+                                    onClick = {
+                                        if (currentRoute != screen.route) {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
                                         }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                            },
-                            icon =  {
-                                if (screen == Screen.MoveOutAlerts && alerts.isNotEmpty())  {
-                                    BadgedBox(badge =  {
-                                        Badge(containerColor = ThemeError)  {
-                                            Text("${alerts.size}", fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                    },
+                                    icon = {
+                                        if ((screen == Screen.MoveOutAlerts) && alerts.isNotEmpty()) {
+                                            BadgedBox(
+                                                badge = {
+                                                    Badge(containerColor = ThemeError) {
+                                                        Text(alerts.size.toString(), fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                                                    }
+                                                },
+                                            ) {
+                                                Icon(
+                                                    imageVector = screen.icon,
+                                                    contentDescription = screen.title,
+                                                    modifier = Modifier.size(22.dp),
+                                                )
+                                            }
+                                        } else {
+                                            Icon(
+                                                imageVector = screen.icon,
+                                                contentDescription = screen.title,
+                                                modifier = Modifier.size(22.dp),
+                                            )
                                         }
-                                    })  {
-                                        Icon(
-                                            imageVector = screen.icon,
-                                            contentDescription = screen.title,
-                                            modifier = Modifier.size(22.dp)
+                                    },
+                                    label = {
+                                        Text(
+                                            text = screen.title,
+                                            fontSize = 11.sp,
+                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                                         )
-                                    }
-                                } else  {
-                                    Icon(
-                                        imageVector = screen.icon,
-                                        contentDescription = screen.title,
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                }
-                            },
-                            label =  {
-                                Text(
-                                    text = screen.title,
-                                    fontSize = 11.sp,
-                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                                    },
+                                    colors = NavigationBarItemDefaults.colors(
+                                        selectedIconColor = ThemePrimary,
+                                        selectedTextColor = ThemePrimary,
+                                        indicatorColor = ThemePrimary.copy(alpha = 0.15f),
+                                    ),
+                                    modifier = Modifier.testTag(screen.tag),
                                 )
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = ThemePrimary,
-                                selectedTextColor = ThemePrimary,
-                                indicatorColor = ThemePrimary.copy(alpha = 0.15f)
-                            ),
-                            modifier = Modifier.testTag(screen.tag)
-                        )
-                    }
-                }
-            }
-        }
+                            }
+                        },
+                    )
+                },
+            )
+        },
     )  { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
         )  {
             composable(Screen.Home.route)  {
                 HomeScreen(
@@ -213,7 +213,7 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                     },
                     onNavigateToMoveOutAlerts =  {
                         navController.navigate(Screen.MoveOutAlerts.route)
-                    }
+                    },
                 )
             }
 
@@ -222,7 +222,7 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                     viewModel = viewModel,
                     onNavigateToDetail =  { listingId ->
                         navController.navigate("listing_detail/$listingId")
-                    }
+                    },
                 )
             }
 
@@ -231,13 +231,13 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                     viewModel = viewModel,
                     onNavigateToDetail =  { listingId ->
                         navController.navigate("listing_detail/$listingId")
-                    }
+                    },
                 )
             }
 
             composable(Screen.Community.route)  {
                 CommunityForumScreen(
-                    viewModel = viewModel
+                    viewModel = viewModel,
                 )
             }
 
@@ -252,7 +252,7 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                         coroutineScope.launch {
                             Clerk.auth.signOut()
                         }
-                    }
+                    },
                 )
             }
 
@@ -265,28 +265,28 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                     },
                     onNavigateToVirtualTour =  { listingId ->
                         navController.navigate("virtual_tour/$listingId")
-                    }
+                    },
                 )
             }
 
             composable(
                 route = "listing_detail/{listingId}",
-                arguments = listOf(navArgument("listingId")  { type = NavType.LongType })
+                arguments = listOf(navArgument("listingId")  { type = NavType.LongType }),
             )  { backStackEntry ->
                 val listingId = backStackEntry.arguments?.getLong("listingId") ?: 1L
                 ListingDetailScreen(
                     listingId = listingId,
                     viewModel = viewModel,
                     onBack =  { navController.popBackStack() },
-                    onNavigateToChat =  { id, title ->
+                    onNavigateToChat =  { _, _ ->
                         navController.navigate("messages")
-                    }
+                    },
                 )
             }
 
             composable(
                 route = "virtual_tour/{listingId}",
-                arguments = listOf(navArgument("listingId")  { type = NavType.LongType })
+                arguments = listOf(navArgument("listingId")  { type = NavType.LongType }),
             )  { backStackEntry ->
                 val listingId = backStackEntry.arguments?.getLong("listingId") ?: 1L
                 VirtualTourViewerScreen(
@@ -296,9 +296,9 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                     onNavigateToDetail =  { id ->
                         navController.navigate("listing_detail/$id")
                     },
-                    onNavigateToChat =  { id, title ->
+                    onNavigateToChat =  { _, _ ->
                         navController.navigate("messages")
-                    }
+                    },
                 )
             }
 
@@ -307,14 +307,14 @@ fun MainAppNavHost(viewModel: RoomFinderViewModel)  {
                     viewModel = viewModel,
                     onNavigateToDetail =  { listingId ->
                         navController.navigate("listing_detail/$listingId")
-                    }
+                    },
                 )
             }
         }
     }
         } else  {
             AuthView(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
